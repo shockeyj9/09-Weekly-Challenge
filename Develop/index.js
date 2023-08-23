@@ -6,7 +6,7 @@ const markDown = require('./utils/generateMarkdown');
 
 
 // TODO: Create an array of questions for user input
-const questions = ["What is the title of the project?","What is the description of this project?","What should be in the table of contents?", "What needs to be installed for this application?","How should this application be used?","What license does this project need?","What is a test for the application?","Are contributors welcome on this project?","What is your GitHub username?","What is your email address?"];
+const questions = ["What is the title of the project?","What is the description of this project?","What should be in the table of contents?", "What needs to be installed for this application?","How should this application be used?","What license does this project need?","What is a test for the application?","How can other developers contribute to this application?","What is your GitHub username?","What is your email address?"];
 
 // TODO: Create a function to write README file
 function writeToFile(fileName, data) {
@@ -46,7 +46,7 @@ inquirer.prompt([
 { //LICENSE INFO WILL NEED TO BE CHANGED HERE
     type: 'input',
     message: questions[5],
-    name: 'license',
+    name: 'licenses',
 },
 {
     type: 'input',
@@ -56,7 +56,7 @@ inquirer.prompt([
 {
     type: 'input',
     message: questions[7],
-    name: 'contributors',
+    name: 'contribute',
 },
 {
     type: 'input',
