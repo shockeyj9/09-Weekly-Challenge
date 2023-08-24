@@ -10,8 +10,9 @@ const markDown = require('./utils/generateMarkdown.js');
 const questions = ["What is the title of the project?","What is the description of this project?","What should be in the table of contents?", "What needs to be installed for this application?","How should this application be used?","What license does this project need?","What is a test for the application?","How can other developers contribute to this application?","What is your GitHub username?","What is your email address?"];
 
 // Function to write README file
-function writeToFile(fileName, data) {
-    fs.appendFile('README.md', markDown.generateMarkdown(data), (err) =>
+async function writeToFile(fileName, data) {
+    const nextStep = await markDown.generateMarkdown(data);
+    fs.appendFile('README.md', nextStep, (err) =>
     err ? console.error(err) : console.log('Commit logged!')
     );
 }
