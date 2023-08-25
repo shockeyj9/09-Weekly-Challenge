@@ -1,5 +1,4 @@
 // Packages needed for this application
-const prompt = require('prompt-sync')();
 const inquirer = require("inquirer");
 const fs = require('fs');
 //Module needed for this application
@@ -32,11 +31,6 @@ function startPrompts(licArray) {
         },
         {
             type: 'input',
-            message: questions[2],
-            name: 'contents',
-        },
-        {
-            type: 'input',
             message: questions[3],
             name: 'installs',
         },
@@ -45,7 +39,7 @@ function startPrompts(licArray) {
             message: questions[4],
             name: 'usage',
         },
-        { //LICENSE INFO WILL NEED TO BE CHANGED HERE
+        {
             type: 'list',
             message: questions[5],
             name: 'licenses',

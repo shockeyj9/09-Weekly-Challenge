@@ -1,7 +1,7 @@
 const { makeBadge, ValidationError } = require('badge-maker');
 
-// TODO: Create a function that returns a license badge based on which license is passed in
-//API function for making the badge 
+
+//Function for making the badge 
 function renderLicenseBadge(licenseName) {
   if (licenseName==='Unlicense'){
     return '';
@@ -28,12 +28,13 @@ async function getLicenseDetails (license){
   }
 
 
-//API functions for getting the license info
+//API functions for getting the license
 async function getLicenseKey(license){
   const response = await fetch('https://api.github.com/licenses');
   const data = await response.json();
   return data;
 }
+
 async function getKey(license){
   const data = await getLicenseKey(license);
   const licInfo = data.filter((element)=>{
@@ -44,13 +45,11 @@ async function getKey(license){
   return licInfo[0].key;
 }
 
-// TODO: Create a function that returns the license section of README
-// If there is no license, return an empty string
+// Function that returns the license data for the README
 async  function renderLicenseSection(license) {
   if (license==='Unlicense'){
     return '';
   }
-
   const rBadge = renderLicenseBadge (license);
   const rKey =  await getKey(license);
   const rLicArr = await getDetails(rKey);
@@ -60,12 +59,11 @@ async  function renderLicenseSection(license) {
         licURl: rLicArr.URL,
         licDESC: rLicArr.DESC,
       }
-      console.log(licObject);
       return licObject;
 }
 
 
-// TODO: Create a function to generate markdown for README
+// Function to generate markdown for README
 async function generateMarkdown(data) {
   const licObject = await renderLicenseSection(data.licenses);
   
@@ -73,18 +71,29 @@ async function generateMarkdown(data) {
 ## Description\n
 ${data.desc}\n
 ## Table of Contents\n
-${data.contents}\n
+  1. [ Description ](#description)
+  2. [ Installation ](#installation)
+  3. [ Usage ](#usage)
+  3. [ License ](#license)
+  3. [ Tests ](#tests)
+  3. [ How to Contribute ](#how-to-contribute)
+  3. [ Questions ](#questions)
 ## Installation\n
 ${data.installs}\n
+
 ## Usage\n
 ${data.usage}\n
+
 ## License\n
 ${licObject.licURl} \n
 ${licObject.licDESC} \n
+
 ## Tests\n
 ${data.test}\n
+
 ## How to Contribute\n
 ${data.contribute}\n
+
 ## Questions\n
 Please visit my GitHub profile [${data.username}](https://github.com/${data.username})\n
 Feel free to reach out with any questions: ${data.email}\n
