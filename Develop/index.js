@@ -1,40 +1,96 @@
-// TODO: Include packages needed for this application
-const prompt = require('prompt-sync')();
+// Packages needed for this application
 const inquirer = require("inquirer");
+const fs = require('fs');
+//Module needed for this application
+const markDown = require('./utils/generateMarkdown.js');
 
-// TODO: Create an array of questions for user input
-const questions = ["What is the title of the project?","What is the description of this project?","What should be in the table of contents?", "What needs to be installed for this application?","How should this application be used?","What license does this project need?","What is a test for the application?","Are contributors welcome on this project?","What is your GitHub username?","What is your email address?"];
 
-// TODO: Create a function to write README file
-function writeToFile(fileName, data) {
-    console.log(fileName);
-    console.log(data);
+// Array of questions for user input
+const questions = ["What is the title of the project?","What is the description of this project?","What should be in the table of contents?", "What needs to be installed for this application?","How should this application be used?","What license does this project need?","What is a test for the application?","How can other developers contribute to this application?","What is your GitHub username?","What is your email address?"];
+
+// Function to write README file
+async function writeToFile(fileName, data) {
+    const nextStep = await markDown.generateMarkdown(data);
+    fs.appendFile('README.md', nextStep, (err) =>
+    err ? console.error(err) : console.log('Commit logged!')
+    );
 }
 
-// TODO: Create a function to initialize app
-function init() {
-    const data = {};
-    data.title = prompt(questions[0]);
-    data.desc = prompt(questions[1]);
-    data.contents = prompt(questions[2]);
-    data.installs = prompt(questions[3]);
-    data.usage = prompt(questions[4]);
-    // ---->LICENSE INPUT OPTIONS
-    // data.license = inquirer.prompt([
-    //     {   type:'list',
-    //         name: 'license',
-    //         message: questions[5],
-    //         choices: ['MIT','SOMETHING','SOMETHING'],
-    //     },
-    // ], answers => {
-    //     console.info('Answer:',answers.license)
-    // })
+//Function to start the command line prompts
+function startPrompts(licArray) {
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: questions[0],
+            name: 'title',
+        },
+        {
+            type: 'input',
+            message: questions[1],
+            name: 'desc',
+        },
+        {
+            type: 'input',
+            message: questions[3],
+            name: 'installs',
+        },
+        {
+            type: 'input',
+            message: questions[4],
+            name: 'usage',
+        },
+        {
+            type: 'list',
+            message: questions[5],
+            name: 'licenses',
+            choices: licArray,
+        },
+        {
+            type: 'input',
+            message: questions[6],
+            name: 'test',
+        },
+        {
+            type: 'input',
+            message: questions[7],
+            name: 'contribute',
+        },
+        {
+            type: 'input',
+            message: questions[8],
+            name: 'username',
+        },
+        {
+            type: 'input',
+            message: questions[9],
+            name: 'email',
+        },
+        
+        ])
+        .then((response)=>{
+            writeToFile(response.title,response);
+        });
+}
 
-    data.test = prompt(questions[6]);
-    data.contributors = prompt(questions[7]);
-    data.userName = prompt(questions[8]);
-    data.email = prompt(questions[9]);
-    writeToFile('README.md',data);
+//API function to pull most common Liscense Types
+function commonLicenses() {
+    fetch('https://api.github.com/licenses')
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+        const licArray = [];
+        for (let i=0; i<data.length; i++){
+            licArray.push(data[i].spdx_id);
+        }
+    startPrompts(licArray);
+    })
+}
+
+
+// Function to initialize app
+function init() {
+    commonLicenses();
 }
 
 // Function call to initialize app
